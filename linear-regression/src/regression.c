@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 
 struct DataFrame {
@@ -46,18 +47,31 @@ struct LinearComponents *gradient_descent(struct DataFrame *dataf, double slope,
     return g;
 }
 
-struct LinearComponents *regression(int epochs, double learning_rate) {
-    struct DataFrame *dataf = malloc(sizeof(struct DataFrame));
+struct LinearComponents *regression(struct DataFrame *dataf, int epochs,
+                                    double learning_rate, int verbose) {
     struct LinearComponents *l;
 
     double slope = 0.0;
     double b = 0.0;
 
-    for (int epoch = 0; epoch < epochs; epoch++) {
-        l = gradient_descent(dataf, slope, b, learning_rate);
+    if (verbose) {
+        for (int epoch = 0; epoch < epochs; epoch++) {
+            l = gradient_descent(dataf, slope, b, learning_rate);
+            if (epoch % 100 == 0) {
+                printf("Epoch [%i]: %f(x) + %f\n", epoch, slope, b);
+            }
 
-        slope = l->slope;
-        b = l->b;
+            slope = l->slope;
+            b = l->b;
+        }
+
+    } else {
+        for (int epoch = 0; epoch < epochs; epoch++) {
+            l = gradient_descent(dataf, slope, b, learning_rate);
+
+            slope = l->slope;
+            b = l->b;
+        }
     }
 
     return l;

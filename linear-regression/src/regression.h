@@ -21,6 +21,7 @@ double mean_squared_error(struct DataFrame *dataf, double(f)(double));
 struct LinearComponents *gradient_descent(struct DataFrame *dataf, double slope,
                                           double b, double learning_rate);
 
-struct LinearComponents *regression(int epochs, double learning_rate);
+struct LinearComponents *regression(struct DataFrame *dataf, int epochs,
+                                    double learning_rate, int verbose);
 
 #endif // REGRESSION_H

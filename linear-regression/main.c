@@ -6,6 +6,11 @@ struct DataFrame {
     size_t size;
 };
 
+struct GradientVector {
+    double slope_gradient;
+    double b_gradient;
+};
+
 double squared_error(struct DataFrame *dataf, double(f)(double)) {
     double error = 0.0;
 
@@ -19,4 +24,23 @@ double squared_error(struct DataFrame *dataf, double(f)(double)) {
 
 double mean_squared_error(struct DataFrame *dataf, double(f)(double)) {
     return squared_error(dataf, f) / (double)(dataf->size);
+}
+
+struct GradientVector *gradient_descent(struct DataFrame *dataf, double slope,
+                                        double b, double learning_rate) {
+    double slope_gradient = 0.0;
+    double b_gradient = 0.0;
+
+    for (int i = 0; i < dataf->size; i++) {
+        slope_gradient += -(2.0 / dataf->size) * dataf->x[i] *
+                          (dataf->y[i] - (slope * dataf->x[i] + b));
+        b_gradient +=
+            -(2.0 / dataf->size) * (dataf->y[i] - (slope * dataf->x[i] + b));
+    }
+
+    struct GradientVector *g = malloc(sizeof(struct GradientVector));
+    g->slope_gradient = slope - slope_gradient * learning_rate;
+    g->b_gradient = b - b_gradient * learning_rate;
+
+    return g;
 }

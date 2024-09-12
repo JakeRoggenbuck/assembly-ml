@@ -6,9 +6,9 @@ struct DataFrame {
     size_t size;
 };
 
-struct GradientVector {
-    double slope_gradient;
-    double b_gradient;
+struct LinearComponents {
+    double slope;
+    double b;
 };
 
 double squared_error(struct DataFrame *dataf, double(f)(double)) {
@@ -26,8 +26,10 @@ double mean_squared_error(struct DataFrame *dataf, double(f)(double)) {
     return squared_error(dataf, f) / (double)(dataf->size);
 }
 
-struct GradientVector *gradient_descent(struct DataFrame *dataf, double slope,
-                                        double b, double learning_rate) {
+struct LinearComponents *gradient_descent(struct DataFrame *dataf, double slope,
+                                          double b, double learning_rate) {
+    struct LinearComponents *g = malloc(sizeof(struct LinearComponents));
+
     double slope_gradient = 0.0;
     double b_gradient = 0.0;
 
@@ -38,9 +40,25 @@ struct GradientVector *gradient_descent(struct DataFrame *dataf, double slope,
         b_gradient += -(2.0 / dataf->size) * a;
     }
 
-    struct GradientVector *g = malloc(sizeof(struct GradientVector));
-    g->slope_gradient = slope - slope_gradient * learning_rate;
-    g->b_gradient = b - b_gradient * learning_rate;
+    g->slope = slope - slope_gradient * learning_rate;
+    g->b = b - b_gradient * learning_rate;
 
     return g;
+}
+
+struct LinearComponents *regression(int epochs, double learning_rate) {
+    struct DataFrame *dataf = malloc(sizeof(struct DataFrame));
+    struct LinearComponents *l;
+
+    double slope = 0.0;
+    double b = 0.0;
+
+    for (int epoch = 0; epoch < epochs; epoch++) {
+        l = gradient_descent(dataf, slope, b, learning_rate);
+
+        slope = l->slope;
+        b = l->b;
+    }
+
+    return l;
 }

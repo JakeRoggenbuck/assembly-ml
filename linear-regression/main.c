@@ -32,10 +32,10 @@ struct GradientVector *gradient_descent(struct DataFrame *dataf, double slope,
     double b_gradient = 0.0;
 
     for (int i = 0; i < dataf->size; i++) {
-        slope_gradient += -(2.0 / dataf->size) * dataf->x[i] *
-                          (dataf->y[i] - (slope * dataf->x[i] + b));
-        b_gradient +=
-            -(2.0 / dataf->size) * (dataf->y[i] - (slope * dataf->x[i] + b));
+        double a = (dataf->y[i] - (slope * dataf->x[i] + b));
+
+        slope_gradient += -(2.0 / dataf->size) * dataf->x[i] * a;
+        b_gradient += -(2.0 / dataf->size) * a;
     }
 
     struct GradientVector *g = malloc(sizeof(struct GradientVector));

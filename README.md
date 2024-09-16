@@ -15,6 +15,8 @@ Part 2. is the `linear-regression` folder which is linear regression written in 
 #### 3. regression_lib
 Part 3. A regression library written in C and accessible in Python through the C extension
 
+![image](https://github.com/user-attachments/assets/85b1c1c4-79d0-4872-b2b8-45d4914f8a2b)
+
 #### 4. TODO
 Part 4. will be to convert the linear regression code into x86-64 assembly
 

@@ -15,3 +15,6 @@ regression_lib/build/
 regression_lib/regression_lib.egg-info/
 regression_lib/venv/
 # ----------------#
+
+build/
+cmake/

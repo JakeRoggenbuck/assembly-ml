@@ -57,7 +57,7 @@ struct LinearComponents *regression(struct DataFrame *dataf, int epochs,
     if (verbose) {
         for (int epoch = 0; epoch < epochs; epoch++) {
             l = gradient_descent(dataf, slope, b, learning_rate);
-            if (epoch % 100 == 0) {
+            if (epoch % 1000 == 0) {
                 printf("Epoch [%i]: %f(x) + %f\n", epoch, slope, b);
             }
 

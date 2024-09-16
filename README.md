@@ -12,8 +12,8 @@ Part 1. is the folder called `add_one` which is a C extension for Python that ad
 #### 2. linear-regression
 Part 2. is the `linear-regression` folder which is linear regression written in C.
 
-#### 3. TODO
-Part 3. will be to add the regression code to another C extension to be able to use linear regression Python that was implemented in C
+#### 3. regression_lib
+Part 3. A regression library written in C and accessible in Python through the C extension
 
 #### 4. TODO
 Part 4. will be to convert the linear regression code into x86-64 assembly

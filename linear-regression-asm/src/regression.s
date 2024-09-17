@@ -6,9 +6,9 @@
 
 .text
 	.globl r_squared_error
-	.globl r_mean_squared_error
-	.globl r_gradient_descent
-	.globl r_regression
+	#.globl r_mean_squared_error
+	#.globl r_gradient_descent
+	#.globl r_regression
 
 # struct DataFrame {
 #     double *y;		8 bytes, 0
@@ -32,21 +32,41 @@ r_squared_error:  															# double squared_error(struct DataFrame *dataf,
 	mov r12, rdi					# save dataf to r12
 	mov r13, rsi					# save f to r13
 																			#     double error = 0.0;
-	mov r14, 0						# r14 = error, = 0
-																			#     for (int i = 0; i < dataf->size; i++) {
+	mov xmm0, 0						# r14 = error, = 0
 	mov r15, 0						# r15 = i, = 0
+
+check_for_loop:
+																			#     for (int i = 0; i < dataf->size; i++) {
+	mov r10, [r12 + 16]				# save size to r10
+	cmp r15, r10					# compare i (r15) and size (r10)
+	jge after_for_loop
 																			#         double delta = (dataf->y[i] - f(dataf->x[i]));
-	mov [r12 + 8 + 8 * r10], rdi	# get dataf->x[i]
+	mov rdi, [r12 + 8 + 8 * r15]	# get dataf->x[i]
 	call r13						# call f on dataf->x[i]
 
-	mov [r12 + 8 * r10], r11		# get dataf->y[i]
+	mov r11, [r12 + 8 * r15]		# get dataf->y[i]
 	sub r11, rax					# subtract y value with f's output (in rax)
 	mov rax, r11					# move r11 over to rax
 																			#         error += delta * delta;
 
-	mul rax							# multipy delta (rax) by delta (rax)
+	# imul rax, rax					# multipy delta (rax) by delta (rax)
+	mov rax, 1
+
+	mov r12, [rsp]					# load r12
+	mov r13, [rsp+8] 				# load r13
+	mov r14, [rsp+16] 				# load r14
+	mov r15, [rsp+24] 				# load r15
+
+	add rsp, 32						# rsp += 32
+	ret								# return rax with error value
+
 	add r14, rax					# add output to error
 
+	add r15, 1
+	jmp check_for_loop
+
+after_for_loop:
+	mov rax, r14					# save error (r14) to rax
 																			#     }
 																			#     return error;
 																			# }
@@ -56,15 +76,15 @@ r_squared_error:  															# double squared_error(struct DataFrame *dataf,
 	mov r15, [rsp+24] 				# load r15
 
 	add rsp, 32						# rsp += 32
-ret									# return rax with error value
+	ret								# return rax with error value
 
-r_mean_squared_error:
+#r_mean_squared_error:
 															# double mean_squared_error(struct DataFrame *dataf, double(f)(double)) {
 															#     return squared_error(dataf, f) / (double)(dataf->size);
 															# }
-ret
+#ret
 
-r_gradient_descent:
+#r_gradient_descent:
 															# struct LinearComponents *gradient_descent(struct DataFrame *dataf, double slope,
 															#                                           double b, double learning_rate) {
 															#     struct LinearComponents *g = malloc(sizeof(struct LinearComponents));
@@ -84,9 +104,9 @@ r_gradient_descent:
 															# 
 															#     return g;
 															# }
-ret
+#ret
 
-r_regression:
+#r_regression:
 															# struct LinearComponents *regression(struct DataFrame *dataf, int epochs,
 															#                                     double learning_rate, int verbose) {
 															#     struct LinearComponents *l;
@@ -103,4 +123,4 @@ r_regression:
 															# 
 															#     return l;
 															# }
-ret
+#ret

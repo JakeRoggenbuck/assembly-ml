@@ -32,7 +32,7 @@ r_squared_error:  															# double squared_error(struct DataFrame *dataf,
 	mov r12, rdi					# save dataf to r12
 	mov r13, rsi					# save f to r13
 																			#     double error = 0.0;
-	mov xmm0, 0						# r14 = error, = 0
+	pxor xmm8, xmm8					# xmm8 = error, = 0
 	mov r15, 0						# r15 = i, = 0
 
 check_for_loop:
@@ -41,33 +41,22 @@ check_for_loop:
 	cmp r15, r10					# compare i (r15) and size (r10)
 	jge after_for_loop
 																			#         double delta = (dataf->y[i] - f(dataf->x[i]));
-	mov rdi, [r12 + 8 + 8 * r15]	# get dataf->x[i]
+	movsd xmm0, [r12 + 8 + 8 * r15]	# get dataf->x[i]
 	call r13						# call f on dataf->x[i]
+									# output is in xmm0
 
-	mov r11, [r12 + 8 * r15]		# get dataf->y[i]
-	sub r11, rax					# subtract y value with f's output (in rax)
-	mov rax, r11					# move r11 over to rax
+	movsd xmm1, [r12 + 8 * r15]		# get dataf->y[i]
+	subsd xmm1, xmm0				# xmm1 = xmm1 - xmm0
 																			#         error += delta * delta;
-
-	# imul rax, rax					# multipy delta (rax) by delta (rax)
-	mov rax, 1
-
-	mov r12, [rsp]					# load r12
-	mov r13, [rsp+8] 				# load r13
-	mov r14, [rsp+16] 				# load r14
-	mov r15, [rsp+24] 				# load r15
-
-	add rsp, 32						# rsp += 32
-	ret								# return rax with error value
-
-	add r14, rax					# add output to error
+	mulsd xmm1, xmm1				# xmm1 = xmm1 * xmm1
+	addsd xmm8, xmm1				# error += xmm1
 
 	add r15, 1
 	jmp check_for_loop
 
 after_for_loop:
-	mov rax, r14					# save error (r14) to rax
-																			#     }
+	movsd xmm0, xmm8				# save error (r14) to rax
+
 																			#     return error;
 																			# }
 	mov r12, [rsp]					# load r12

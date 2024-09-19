@@ -17,8 +17,8 @@ int tests() {
     }
 
     double se = r_squared_error(&dataf, linear_function);
-	printf("%d", se);
-    /*assert(se == 0.0);*/
+    printf("%f\n", se);
+    assert(se == 0.0);
 
     /*double mse = r_mean_squared_error(&dataf, linear_function);*/
     /*assert(mse == 0.0);*/
@@ -32,7 +32,8 @@ int tests() {
     /*struct LinearComponents *regression_result =*/
     /*    r_regression(&dataf, 10000, 0.001, 1);*/
     /**/
-    /*assert(regression_result->slope > 4.9 && regression_result->slope < 5.1);*/
+    /*assert(regression_result->slope > 4.9 && regression_result->slope
+     * < 5.1);*/
     /*assert(regression_result->b > 1.9 && regression_result->b < 2.1);*/
     /**/
     /*free(dataf.x);*/

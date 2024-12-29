@@ -8,8 +8,19 @@ int tests() {
     struct DataFrame dataf;
 
     dataf.size = 1;
+
     dataf.x = malloc(dataf.size * sizeof(double));
     dataf.y = malloc(dataf.size * sizeof(double));
+
+    if (dataf.x == NULL) {
+        fprintf(stderr, "Malloc failed.\n");
+        exit(1);
+    }
+
+    if (dataf.y == NULL) {
+        fprintf(stderr, "Malloc failed.\n");
+        exit(1);
+    }
 
     for (int i = 0; i < dataf.size; i++) {
         dataf.x[i] = (double)i;
